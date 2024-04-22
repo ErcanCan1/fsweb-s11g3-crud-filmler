@@ -5,7 +5,7 @@ import MovieList from './components/MovieList';
 import Movie from './components/Movie';
 import EditMovieForm from "./components/EditMovieForm";
 import MovieHeader from './components/MovieHeader';
-
+import AddMovieForm from "./components/AddMovieForm";
 import FavoriteMovieList from './components/FavoriteMovieList';
 
 import axios from 'axios';
@@ -29,12 +29,17 @@ const { push } = useHistory()
     .delete(`http://localhost:9000/api/movies/${id}`)
     .then(res => {
       push("/movies");
-      setMovies(res.data)})
+      setMovies(res.data)})//app içindeki film listesini de güncelliyoruz.
     .catch(err => {console.log(err)});
   }
 
   const addToFavorites = (movie) => {
-
+    if(!favoriteMovies.find((mov) => mov.id === movie.id)){
+      console.log("Favori Film Listede Bulunamadı");
+      setFavoriteMovies([...favoriteMovies, movie]);
+    }else {
+      console.log("Favori Film Listede")
+    }
   }
 
   return (
@@ -53,8 +58,12 @@ const { push } = useHistory()
             <EditMovieForm setMovies= {setMovies}/>
             </Route>
 
+            <Route path="/movies/add">
+              <AddMovieForm setMovies={setMovies}/>
+            </Route>
+
             <Route path="/movies/:id">
-              <Movie deleteMovie={deleteMovie}/>
+              <Movie deleteMovie={deleteMovie} addToFavorites={addToFavorites}/>
             </Route>
 
             <Route path="/movies">
